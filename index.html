@@ -21,6 +21,37 @@ body.noscroll{overflow:hidden}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 textarea{font:inherit;font-size:15px;color:var(--text);background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;outline:none;margin-top:4px;resize:vertical}
 .how{margin-top:6px}
+.lvl{display:inline-block;font-size:11px;font-weight:700;background:#fff4e5;color:#b45309;border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:2px}
+.bar{height:8px;background:var(--card2);border-radius:99px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#16a34a,#0d9488);border-radius:99px}
+.lrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 0;border-top:1px solid var(--line)}
+.lrow .mid{flex:1;min-width:0}
+.lrow small{display:block;color:var(--muted);font-size:13px}
+.lrow .lv{font-size:20px;font-weight:800;color:#b45309;text-align:center;min-width:44px;line-height:1}
+.lrow .lv small{font-size:11px;font-weight:600;color:var(--muted)}
+.hero.lvhero{background:linear-gradient(140deg,#f59e0b,#ea580c);box-shadow:0 8px 24px rgba(234,88,12,.25)}
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 10px}
+.rgrid div{background:var(--card2);border-radius:12px;padding:10px 6px;text-align:center}
+.rgrid b{display:block;font-size:18px}
+.rgrid small{font-size:12px;color:var(--muted)}
+.rnote{font-size:14px;padding:6px 0;border-top:1px solid var(--line)}
+.next{background:var(--accbg);border-radius:12px;padding:10px 12px;margin:10px 0;font-size:14px}
+.next div{margin:3px 0}
+.demo{position:relative;width:100%;aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:#dfe4ec;margin:2px 0 8px}
+.demo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.demo img.f2{animation:demoflip 2.4s ease-in-out infinite}
+@keyframes demoflip{0%,38%{opacity:0}50%,88%{opacity:1}100%{opacity:0}}
+.demo .dtag{position:absolute;left:8px;bottom:8px;background:rgba(15,20,30,.65);color:#fff;font-size:12px;font-weight:600;padding:3px 8px;border-radius:8px}
+.demo-btn{display:block;width:100%;padding:0;margin:0 0 6px;border-radius:12px}
+.thumb{display:block;position:relative;width:76px;height:52px;border-radius:10px;overflow:hidden;flex:none;background:#dfe4ec}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.thumb img.f2{animation:demoflip 2.4s ease-in-out infinite}
+.thumb.sm{width:44px;height:44px;border-radius:10px}
+#restbar .thumb{width:46px;height:34px;border-radius:7px}
+#restbar button{padding:9px 7px}
+.yt{text-decoration:none;display:inline-flex;align-items:center;gap:6px;color:var(--danger);font-weight:600;font-size:14px;margin-top:6px}
+.dwrap{position:relative}
+.dwrap .dhide{position:absolute;right:8px;top:8px;background:rgba(15,20,30,.55);color:#fff;border-radius:8px;font-size:12px;padding:3px 8px}
 .how summary{color:var(--d1);font-size:14px;font-weight:600;cursor:pointer;list-style:none;padding:2px 0}
 .how summary::-webkit-details-marker{display:none}
 .how summary::before{content:'ⓘ ';}
@@ -211,6 +242,7 @@ body.resting main{padding-bottom:96px}
   <button data-act="tab" data-tab="summary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Summary</button>
   <button data-act="tab" data-tab="workout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6.5 7v10M3.5 9.5v5M17.5 7v10M20.5 9.5v5M6.5 12h11"/></svg>Workout</button>
   <button data-act="tab" data-tab="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>History</button>
+  <button data-act="tab" data-tab="progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Progress</button>
   <button data-act="tab" data-tab="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h9M19 6h1M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="16" cy="6" r="2.2"/><circle cx="9" cy="12" r="2.2"/><circle cx="17" cy="18" r="2.2"/></svg>Settings</button>
 </nav>
 <div id="restbar" class="hidden"></div>
@@ -262,6 +294,31 @@ const HOW = {
   'hanging leg raises': 'Hang from the bar with shoulders engaged (not fully loose).\nRaise the legs by curling the pelvis up — don\'t swing.\nBent knees are easier, straight legs are harder.\nLower slowly to stop momentum building up.',
 };
 const howFor = name => HOW[String(name).trim().toLowerCase()] || '';
+/* exercise demo photos (start + end position, shown as a looping animation).
+   Source: free-exercise-db by yuhonas (public domain) */
+const DEMOS = {
+  'Leg_Press': 'Leg press', 'Barbell_Bench_Press_-_Medium_Grip': 'Barbell bench press', 'Seated_Cable_Rows': 'Seated cable row',
+  'Lying_Leg_Curls': 'Leg curl', 'Side_Lateral_Raise': 'Lateral raise', 'Face_Pull': 'Face pull', 'Triceps_Pushdown': 'Triceps pushdown',
+  'Dumbbell_Bicep_Curl': 'Dumbbell curl', 'Cable_Crunch': 'Cable crunch', 'Barbell_Deadlift': 'Deadlift', 'Seated_Dumbbell_Press': 'Seated dumbbell press',
+  'Wide-Grip_Lat_Pulldown': 'Wide-grip lat pulldown', 'Split_Squat_with_Dumbbells': 'Split squat', 'Butterfly': 'Pec deck / butterfly',
+  'Reverse_Machine_Flyes': 'Reverse pec deck', 'Standing_Calf_Raises': 'Standing calf raise', 'Plank': 'Plank', 'Romanian_Deadlift': 'Romanian deadlift',
+  'Barbell_Incline_Bench_Press_-_Medium_Grip': 'Incline barbell press', 'Underhand_Cable_Pulldowns': 'Underhand pulldown', 'Leg_Extensions': 'Leg extension',
+  'Cable_Rope_Overhead_Triceps_Extension': 'Overhead cable triceps extension', 'Hammer_Curls': 'Hammer curl', 'Hanging_Leg_Raise': 'Hanging leg raise',
+};
+const DEMO_BY_NAME = {
+  'leg press, lying': 'Leg_Press', 'barbell bench press': 'Barbell_Bench_Press_-_Medium_Grip', 'seated cable row': 'Seated_Cable_Rows',
+  'hamstring curl machine': 'Lying_Leg_Curls', 'lateral raises': 'Side_Lateral_Raise', 'face pulls': 'Face_Pull', 'triceps pushdown': 'Triceps_Pushdown',
+  'db bicep curl': 'Dumbbell_Bicep_Curl', 'cable crunch': 'Cable_Crunch', 'deadlift': 'Barbell_Deadlift', 'seated db shoulder press': 'Seated_Dumbbell_Press',
+  'lat pulldown, wide grip': 'Wide-Grip_Lat_Pulldown', 'bulgarian split squat': 'Split_Squat_with_Dumbbells', 'pec deck fly': 'Butterfly',
+  'reverse pec deck': 'Reverse_Machine_Flyes', 'calf raises': 'Standing_Calf_Raises', 'plank': 'Plank', 'romanian deadlift, trap bar': 'Romanian_Deadlift',
+  'incline barbell press': 'Barbell_Incline_Bench_Press_-_Medium_Grip', 'lat pulldown, underhand': 'Underhand_Cable_Pulldowns', 'quad extension machine': 'Leg_Extensions',
+  'overhead triceps extension': 'Cable_Rope_Overhead_Triceps_Extension', 'hammer curl': 'Hammer_Curls', 'hanging leg raises': 'Hanging_Leg_Raise',
+};
+const demoOf = x => (x && x.demo && DEMOS[x.demo]) ? x.demo : (x && x.demo === 'none') ? null : DEMO_BY_NAME[String(x && x.name || '').trim().toLowerCase()] || null;
+const imgs = id => `<img src="img/${id}-0.jpg" alt="" loading="lazy"><img class="f2" src="img/${id}-1.jpg" alt="" loading="lazy">`;
+const thumbHTML = (id, cls = '') => id ? `<span class="thumb ${cls}">${imgs(id)}</span>` : '';
+const ytURL = name => 'https://www.youtube.com/results?search_query=' + encodeURIComponent(name + ' exercise proper form');
+function demoBig(id, label) { return id ? `<div class="demo">${imgs(id)}<span class="dtag">${esc(label || DEMOS[id])}</span></div>` : ''; }
 function howHTML(t) {
   if (!t) return '';
   return `<details class="how"><summary>How to do it</summary><ul>${t.split('\n').filter(x => x.trim()).map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>`;
@@ -271,6 +328,7 @@ function ex(name, sets, reps, w, mode, o = {}) {
   return { id: uid(), name, sets, reps, w, mode, sides: o.sides || 1, ss: o.ss || '', note: o.note || '',
     how: howFor(name), wu: { on: true, auto: true, reps: o.wuReps ?? (mode === 'time' ? 30 : mode === 'bw' ? 6 : 10), w: 0 } };
 }
+function withStart(days) { days.forEach(d => d.exercises.forEach(e => { e.start = e.w; })); return days; }
 function defaultDays() {
   return [
     { id: 'd1', name: 'Day 1', title: 'Full Body A', sub: 'Leg press & bench', exercises: [
@@ -307,13 +365,20 @@ function defaultDays() {
     { id: 'd4', name: 'Day 4', title: 'Extra day', sub: 'Pick any exercises from Days 1–3', exercises: [] },
   ];
 }
-function defaultState() { return { v: 1, settings: { unit: 'kg', kgPerHole: 5, wuPct: 55, restDefault: 90, restWarm: 60, sound: true, wakeLock: true, iosTimer: false, shortcutName: 'Trening Rest' }, days: defaultDays(), history: [], active: null }; }
+function defaultState() { return { v: 1, settings: { unit: 'kg', kgPerHole: 5, wuPct: 55, autoProg: 'apply', demos: true, restDefault: 90, restWarm: 60, sound: true, wakeLock: true, iosTimer: false, shortcutName: 'Trening Rest' }, days: withStart(defaultDays()), history: [], active: null }; }
 function migrate(o) {
-  o.settings = Object.assign({ kgPerHole: 5, wuPct: 55, restDefault: 90, restWarm: 60, sound: true, wakeLock: true, iosTimer: false, shortcutName: 'Trening Rest' }, o.settings || {}); o.settings.unit = 'kg';
+  o.settings = Object.assign({ kgPerHole: 5, wuPct: 55, autoProg: 'apply', demos: true, restDefault: 90, restWarm: 60, sound: true, wakeLock: true, iosTimer: false, shortcutName: 'Trening Rest' }, o.settings || {}); o.settings.unit = 'kg';
   o.days = Array.isArray(o.days) && o.days.length ? o.days : defaultDays();
   o.history = Array.isArray(o.history) ? o.history : [];
   o.active = o.active || null;
-  o.days.forEach(d => d.exercises.forEach(e => { if (e.how === undefined) e.how = howFor(e.name); }));
+  o.days.forEach(d => d.exercises.forEach(e => {
+    if (e.how === undefined) e.how = howFor(e.name);
+    if (e.start === undefined) { /* starting weight for levels: first logged working weight, else current */
+      const h = o.history.slice().sort((a, b) => a.date < b.date ? -1 : 1);
+      let st = null; for (const ss of h) { const x = ss.exercises.find(x => x.name === e.name); const ws = x && x.sets.filter(t => t.t === 's'); if (ws && ws.length) { st = Math.max(...ws.map(t => +t.w || 0)); break; } }
+      e.start = st ?? e.w;
+    }
+  }));
   if (o.active) o.active.exercises.forEach(x => { if (x.how === undefined) x.how = howFor(x.name); });
   return o;
 }
@@ -360,7 +425,23 @@ const stepOf = e => (e.step > 0 ? e.step : DEF_STEP[e.mode] || 2.5);
 const stepLabel = (mode, st) => mode === 'hole' ? (st === 1 ? '1 hole' : st + ' holes') : unitW(st) + ' ' + U() + (mode === 'hand' ? '/hand' : '');
 const findAny = id => { for (const d of S.days) { const e = d.exercises.find(x => x.id === id); if (e) return e; } return null; };
 const FEEL = { easy: ['Too easy', '😌'], ok: ['Just right', '👍'], hard: ['Too hard', '🥵'] };
-function suggText(sg, mode) { return `${sg.dir > 0 ? '↑ Felt too easy' : '↓ Felt too hard'} ${fmtDate(sg.date)} → try ${wLabel(mode, sg.w)}`; }
+function suggText(sg, mode) { return `${sg.dir > 0 ? '↑' : '↓'} ${sg.why || (sg.dir > 0 ? 'Felt too easy' : 'Felt too hard')} ${fmtDate(sg.date)} → try ${wLabel(mode, sg.w)}`; }
+const r2 = x => Math.round(x * 100) / 100;
+const LEVEL_MODES = ['kg', 'hand', 'hole'];
+function repRange(r) { const n = String(r).match(/\d+/g); if (!n) return [10, 10]; const a = +n[0], b = +(n[1] || n[0]); return [Math.min(a, b), Math.max(a, b)]; }
+function lastSessFor(name) { const h = S.history.slice().sort(cmpSess); for (let i = h.length - 1; i >= 0; i--) { const x = h[i].exercises.find(x => x.name === name); if (x) return { s: h[i], x }; } return null; }
+/* level = 1 + number of weight steps above the starting weight; progress bar = reps towards the top of the range at the current weight */
+function levelInfo(e) {
+  if (!LEVEL_MODES.includes(e.mode)) return null;
+  const st = stepOf(e), start = e.start ?? e.w, lv = 1 + Math.max(0, Math.round((e.w - start) / st));
+  const [mn, mx] = repRange(e.reps), need = mx * e.sets, base = mn * e.sets;
+  let done = 0, cur = false;
+  const L = lastSessFor(e.name);
+  if (L) { const ws = L.x.sets.filter(t => t.t === 's'); const top = ws.length ? Math.max(...ws.map(t => +t.w || 0)) : 0;
+    if (Math.abs(top - e.w) < 0.01) { cur = true; done = ws.slice(0, e.sets).reduce((a, t) => a + Math.min(mx, +t.reps || 0), 0); } }
+  const pct = cur ? Math.max(0, Math.min(1, (done - base) / Math.max(1, need - base))) : 0;
+  return { lv, start, need, done, cur, pct, mn, mx };
+}
 
 /* volume of one set in kg (approximate) */
 function vol(x, s, kph) {
@@ -415,6 +496,7 @@ function render() {
   if (ui.tab === 'workout') v = ui.view === 'day' ? viewDay() : ui.view === 'active' ? viewActive() : viewHome();
   else if (ui.tab === 'history') v = viewHistory();
   else if (ui.tab === 'summary') v = viewSummary();
+  else if (ui.tab === 'progress') v = viewProgress();
   else v = viewSettings();
   $('#top').innerHTML = v[0];
   $('#main').innerHTML = v[1];
@@ -466,8 +548,9 @@ function exRow(d, e, i, E) {
   const ctl = E
     ? `<div class="ex-ctl"><button data-act="mv" data-dir="-1" ${a}>↑</button><button data-act="mv" data-dir="1" ${a}>↓</button><button class="del" data-act="delEx" ${a}>✕</button></div>`
     : `<button class="ex-edit" data-act="editEx" ${a} aria-label="Edit">✎</button>`;
-  return `<div class="ex" ${E ? `data-act="editEx" ${a}` : ''}><div class="ex-main"><div class="ex-name">${e.ss ? `<span class="ss">${esc(e.ss)}</span>` : ''}${esc(e.name)}</div>
-    <div class="ex-tgt">${targetText(e)}</div>${wu}${e.sugg ? `<div class="sugg-l ${e.sugg.dir < 0 ? 'down' : ''}">${suggText(e.sugg, e.mode)} · <button class="link" style="margin:0" data-act="applySugg" ${a}>Apply now</button></div>` : ''}${e.note ? `<div class="note">${esc(e.note)}</div>` : ''}${E ? '' : howHTML(e.how)}</div>${ctl}</div>`;
+  const dm = demoOf(e);
+  return `<div class="ex" ${E ? `data-act="editEx" ${a}` : ''}>${dm && !E ? `<button data-act="demo" ${a} aria-label="Show demo">${thumbHTML(dm)}</button>` : ''}<div class="ex-main"><div class="ex-name">${e.ss ? `<span class="ss">${esc(e.ss)}</span>` : ''}${esc(e.name)}${(li => li ? `<span class="lvl">Lv ${li.lv}</span>` : '')(levelInfo(e))}</div>
+    <div class="ex-tgt">${targetText(e)}</div>${wu}${e.chg && Math.abs(e.chg.to - e.w) < 0.01 ? `<div class="sugg-l">↑ Auto-increased ${wLabel(e.mode, e.chg.from)} → ${wLabel(e.mode, e.chg.to)} · you ${esc(e.chg.why)}</div>` : ''}${e.sugg ? `<div class="sugg-l ${e.sugg.dir < 0 ? 'down' : ''}">${suggText(e.sugg, e.mode)} · <button class="link" style="margin:0" data-act="applySugg" ${a}>Apply now</button></div>` : ''}${e.note ? `<div class="note">${esc(e.note)}</div>` : ''}${E ? '' : howHTML(e.how)}</div>${ctl}</div>`;
 }
 
 function viewDay() {
@@ -503,8 +586,10 @@ function activeCard(x, i) {
       <input data-field="sW" inputmode="decimal" value="${wInput(x.mode, s.w)}" aria-label="weight"><span class="u">${wUnit(x.mode)}</span>
       <button class="chk" data-act="tick" aria-label="done" ${ok ? '' : 'disabled'}>✓</button></div>`;
   }).join('');
-  return `<section class="card acard"><div class="ex-name">${x.ss ? `<span class="ss">${esc(x.ss)}</span>` : ''}${esc(x.name)}</div>
-    <div class="ex-tgt">Target ${x.nSets} × ${esc(x.target)}${repsUnit(x.mode)}${x.sides === 2 ? '/leg' : ''}${x.note ? ' · ' + esc(x.note) : ''}</div>${howHTML(x.how)}
+  const dm = demoOf(x);
+  const demo = dm && S.settings.demos ? `<div class="dwrap">${demoBig(dm)}</div>` : '';
+  return `<section class="card acard">${demo}<div class="ex-name">${x.ss ? `<span class="ss">${esc(x.ss)}</span>` : ''}${esc(x.name)}</div>
+    <div class="ex-tgt">Target ${x.nSets} × ${esc(x.target)}${repsUnit(x.mode)}${x.sides === 2 ? '/leg' : ''}${x.note ? ' · ' + esc(x.note) : ''}</div>${howHTML(x.how)}<a class="yt" href="${ytURL(x.name)}" target="_blank" rel="noopener">▶ Watch a video (online)</a>
     ${x.sugg ? `<div class="sugg ${x.sugg.dir < 0 ? 'down' : ''}"><span>${x.suggUsed ? '✓ Using ' + wLabel(x.mode, x.sugg.w) : suggText(x.sugg, x.mode)}</span>${x.suggUsed ? '' : `<button data-act="useSugg" data-ei="${i}">Use</button>`}</div>` : ''}${rows}
     <div class="feel-l">How was the weight?</div>
     <div class="feel">${Object.entries(FEEL).map(([k, v]) => `<button class="${k} ${x.feel === k ? 'on' : ''}" data-act="feel" data-ei="${i}" data-v="${k}">${v[1]} ${v[0]}</button>`).join('')}</div>
@@ -537,7 +622,7 @@ function calendarHTML() {
 
 function sessRow(s) {
   const c = compare(s.totalKg);
-  return `<button class="srow" data-act="openSess" data-id="${s.id}"><span class="dot" style="background:var(--${s.dayId},var(--acc))"></span>
+  return `<button class="srow" data-act="openSess" data-id="${s.id}">${(d => d ? thumbHTML(d, 'sm') : `<span class="dot" style="background:var(--${s.dayId},var(--acc))"></span>`)(s.exercises.map(demoOf).find(Boolean))}
     <div class="mid"><b>${esc(s.dayName)} · ${esc(s.dayTitle)}</b><small>${fmtDate(s.date)} · ${s.exercises.length} exercise${s.exercises.length === 1 ? '' : 's'}</small></div>
     <div class="sr-r"><b>${fmtKgShort(s.totalKg)}</b><small>${c ? c.emoji : ''}</small></div></button>`;
 }
@@ -556,6 +641,71 @@ function chartSVG(pts) {
   const line = pts.map((p, i) => `${X(i).toFixed(1)},${Y(p.v).toFixed(1)}`).join(' ');
   return `<svg class="chart" viewBox="0 0 ${W} ${H}">${g}<polyline points="${line}" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linejoin="round"/>${pts.map((p, i) => `<circle cx="${X(i).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="3.5" fill="#16a34a"/>`).join('')}
     <text x="${L}" y="${H - 6}" font-size="10" fill="#6b7385">${dl(pts[0].date)}</text><text x="${W - R}" y="${H - 6}" font-size="10" fill="#6b7385" text-anchor="end">${dl(pts[pts.length - 1].date)}</text></svg>`;
+}
+
+function weekStats(off) {
+  const ws = weekStart(new Date()); ws.setDate(ws.getDate() + 7 * off);
+  const we = new Date(ws); we.setDate(we.getDate() + 6);
+  const a = ymd(ws), b = ymd(we), ss = S.history.filter(s => s.date >= a && s.date <= b);
+  const feels = { easy: 0, ok: 0, hard: 0 };
+  ss.forEach(s => s.exercises.forEach(x => { if (x.feel) feels[x.feel]++; }));
+  return { a, b, ws, we, ss, kg: ss.reduce((t, s) => t + s.totalKg, 0),
+    sets: ss.reduce((t, s) => t + s.exercises.reduce((u, x) => u + x.sets.filter(q => q.t === 's').length, 0), 0),
+    ups: ss.reduce((t, s) => t + (s.next || []).filter(c => c.auto).length, 0), feels, days: new Set(ss.map(s => s.dayId)) };
+}
+function recapHTML() {
+  const off = ui.recapOff || 0, w = weekStats(off), p = weekStats(off - 1);
+  const label = off === 0 ? 'This week' : off === -1 ? 'Last week' : `${w.ws.getDate()}.${w.ws.getMonth() + 1}. – ${w.we.getDate()}.${w.we.getMonth() + 1}.`;
+  const main = ['d1', 'd2', 'd3'], doneMain = main.filter(d => w.days.has(d));
+  const notes = [];
+  if (off === 0) {
+    const left = main.filter(d => !w.days.has(d)).map(d => day(d) ? day(d).name : d);
+    notes.push(doneMain.length >= 3 ? '✅ All 3 main days done — great week.' : `🗓️ ${doneMain.length} of 3 main days done${left.length ? ' · still to go: ' + left.join(', ') : ''}.`);
+  } else notes.push(doneMain.length >= 3 ? '✅ All 3 main days done.' : `🗓️ ${doneMain.length} of 3 main days done.`);
+  if (w.days.has('d4')) notes.push('➕ Extra Day 4 done too.');
+  if (w.kg > 0 && p.kg > 0) { const ch = Math.round((w.kg - p.kg) / p.kg * 100); notes.push(ch >= 0 ? `📈 ${ch}% more weight lifted than the week before.` : `📉 ${-ch}% less weight lifted than the week before${off === 0 ? ' (so far)' : ''}.`); }
+  if (w.ups) notes.push(`🎉 ${w.ups} weight increase${w.ups > 1 ? 's' : ''} earned.`);
+  if (w.feels.hard >= 3) notes.push(`🥵 ${w.feels.hard} lifts felt too hard — sleep, food and rest matter. Keeping the weights the same next week is fine.`);
+  else if (w.feels.easy >= 3) notes.push(`😌 ${w.feels.easy} lifts felt easy — you're ready to push a bit more.`);
+  if (!w.ss.length) notes.length = 0, notes.push(off === 0 ? 'No workouts yet this week — Day ' + (nextDayId().slice(1)) + ' is up next.' : 'No workouts this week.');
+  // streak: consecutive full weeks (3+ workouts), counting back from last week (+ this week if already 3+)
+  let streak = 0; for (let k = -1; k > -104; k--) { if (weekStats(k).ss.length >= 3) streak++; else break; }
+  if (weekStats(0).ss.length >= 3) streak++;
+  return `<section class="card"><div class="calhead"><button data-act="recapNav" data-dir="-1">‹</button><b>${label}</b><button data-act="recapNav" data-dir="1" ${off >= 0 ? 'disabled style="opacity:.3"' : ''}>›</button></div>
+    <div class="rgrid"><div><b>${w.ss.length}</b><small>workouts</small></div><div><b>${fmtKgShort(w.kg)}</b><small>lifted</small></div><div><b>${w.sets}</b><small>working sets</small></div></div>
+    ${notes.map(n => `<div class="rnote">${n}</div>`).join('')}
+    ${streak ? `<div class="rnote">🔥 ${streak} week${streak > 1 ? 's' : ''} in a row with 3+ workouts.</div>` : ''}</section>`;
+}
+function viewProgress() {
+  const all = []; S.days.forEach(d => d.exercises.forEach(e => { const li = levelInfo(e); if (li) all.push({ d, e, li }); }));
+  const best = {}; all.forEach(o => { if (!best[o.e.name] || o.li.lv > best[o.e.name]) best[o.e.name] = o.li.lv; });
+  const ups = Object.values(best).reduce((a, l) => a + l - 1, 0), overall = 1 + ups;
+  let m = `<div class="hero lvhero"><small>Overall level</small><div class="hv">Level ${overall}</div><div class="hc">${ups ? `${ups} weight increase${ups > 1 ? 's' : ''} across your exercises` : 'Every weight increase on any exercise = +1 level'}</div></div>`;
+  m += `<div class="lbl pad">Weekly recap</div>` + recapHTML();
+  m += `<div class="lbl pad">Exercise levels</div>`;
+  S.days.forEach(d => {
+    const rows = all.filter(o => o.d === d); if (!rows.length) return;
+    m += `<section class="card"><div class="wday" style="color:var(--${d.id})">${esc(d.name)} · ${esc(d.title)}</div>${rows.map(({ e, li }) => {
+      const dm = demoOf(e), sub = li.cur ? `${li.done}/${li.need} reps · ${li.need - li.done > 0 ? `${li.mx} reps on all ${e.sets} sets to level up` : 'ready to level up'}` : `${e.sets} × ${li.mx} reps at this weight to level up`;
+      return `<button class="lrow" data-act="exProg" data-day="${d.id}" data-ex="${e.id}">${dm ? thumbHTML(dm, 'sm') : ''}<div class="mid"><b>${esc(e.name)}</b><small>${wLabel(e.mode, e.w)} · ${sub}</small><div class="bar"><i style="width:${Math.round(li.pct * 100)}%"></i></div></div><div class="lv"><small>LV</small><br>${li.lv}</div></button>`;
+    }).join('')}</section>`;
+  });
+  m += `<div class="muted" style="margin:4px 4px 12px">Levels go up by one each time an exercise's weight goes up by its step. The bar fills as your reps at the current weight climb towards the top of the range.</div>`;
+  return [hdr('Progress'), m];
+}
+function exProgHTML(e) {
+  const li = levelInfo(e), dm = demoOf(e), hist = S.history.slice().sort(cmpSess), pts = [], recent = [];
+  let bestSet = null;
+  hist.forEach(s => { const x = s.exercises.find(x => x.name === e.name); if (!x) return; const ws = x.sets.filter(t => t.t === 's'); if (!ws.length) return;
+    const top = Math.max(...ws.map(t => +t.w || 0)); pts.push({ date: s.date, v: x.mode === 'hole' ? top : unitW(top) }); recent.push({ s, x, ws });
+    ws.forEach(t => { if (!bestSet || t.w > bestSet.w || (t.w === bestSet.w && t.reps > bestSet.reps)) bestSet = { w: +t.w, reps: +t.reps, date: s.date }; }); });
+  const orm = bestSet && e.mode === 'kg' ? Math.round(bestSet.w * (1 + bestSet.reps / 30)) : null;
+  return `<h3>${esc(e.name)}</h3>${demoBig(dm)}
+    <div class="rgrid"><div><b>Lv ${li ? li.lv : '–'}</b><small>level</small></div><div><b>${wLabel(e.mode, e.w)}</b><small>now</small></div><div><b>${wLabel(e.mode, li ? li.start : e.w)}</b><small>started at</small></div></div>
+    ${bestSet ? `<div class="rnote">🏆 Best set: ${bestSet.reps} × ${wLabel(e.mode, bestSet.w)} (${fmtDate(bestSet.date)})${orm ? ` · estimated 1-rep max ≈ ${orm} kg` : ''}</div>` : ''}
+    ${pts.length ? chartSVG(pts.slice(-20)) + '<div class="muted">Heaviest working set per workout</div>' : '<div class="empty">No workouts logged for this exercise yet.</div>'}
+    ${recent.slice(-5).reverse().map(({ s, ws }) => `<div class="rnote">${fmtDate(s.date)} · ${ws.map(t => `${t.reps}×${e.mode === 'hole' ? 'H' + t.w : unitW(t.w)}`).join(', ')}</div>`).join('')}
+    <button class="btn main" data-act="close">Close</button>`;
 }
 
 function progressHTML() {
@@ -588,7 +738,6 @@ function viewHistory() {
   const list = H.slice().sort(cmpSess).reverse().slice(0, 30);
   m += `<section class="card"><div class="lbl">Recent workouts</div>${list.length ? list.map(sessRow).join('') : '<div class="empty">No workouts yet</div>'}</section>`;
   m += `<section class="card"><div class="lbl">Days completed</div>${S.days.map(d => `<div class="dcrow"><span style="color:var(--${d.id});font-weight:700">${esc(d.name)}</span><span>${esc(d.title)}</span><b>${H.filter(s => s.dayId === d.id).length}×</b></div>`).join('')}</section>`;
-  m += progressHTML();
   return [hdr('History'), m];
 }
 
@@ -604,10 +753,17 @@ function viewSettings() {
   let m = `<section class="card"><div class="lbl">Cable machines</div>
     <label class="fl">Cable machine: kg per hole<input data-field="kph" inputmode="decimal" value="${st.kgPerHole}"></label>
     <div class="muted">Only used to estimate the total weight lifted for cable exercises set by hole number (e.g. "Hole 7").</div></section>
+  <section class="card"><div class="lbl">Progression</div>
+    <label class="fl">When you hit the top of the rep range on every set (e.g. 12 reps on all 4 sets of 10–12)<select data-field="autoProg">
+      <option value="apply" ${st.autoProg === 'apply' ? 'selected' : ''}>Increase the weight automatically</option>
+      <option value="suggest" ${st.autoProg === 'suggest' ? 'selected' : ''}>Only suggest an increase</option>
+      <option value="off" ${st.autoProg === 'off' ? 'selected' : ''}>Do nothing</option></select></label>
+    <div class="muted">Increase = the exercise's step (dumbbells 2.5 kg, barbell/machines 10 kg, cables 1 hole). Not when you rated it "Too hard".</div></section>
   <section class="card"><div class="lbl">Rest timer</div>
     <div class="grid2"><label class="fl">Rest between sets (s)<input data-field="restDefault" inputmode="numeric" value="${st.restDefault}"></label><label class="fl">Rest after warm-up (s)<input data-field="restWarm" inputmode="numeric" value="${st.restWarm}"></label></div>
     <div class="muted">The timer starts when you tick ✓. You can set a different rest for any exercise with ✎. In a superset there's no rest between the two exercises, only after the pair.</div>
     <label class="ck tog"><span>Beep when rest is over<small>Not when the phone is on silent</small></span><input type="checkbox" data-field="sound" ${st.sound ? 'checked' : ''}></label>
+    <label class="ck tog"><span>Show exercise demos during a workout<small>Looping start/end pictures on each exercise</small></span><input type="checkbox" data-field="demos" ${st.demos ? 'checked' : ''}></label>
     <label class="ck tog"><span>Keep screen on during a workout<small>So the timer stays visible (iOS 18.4+)</small></span><input type="checkbox" data-field="wakeLock" ${st.wakeLock ? 'checked' : ''}></label>
     <button class="btn sec" data-act="testSound">Test beep</button></section>
   <section class="card"><div class="lbl">Lock screen + vibration</div>
@@ -628,7 +784,7 @@ function viewSettings() {
     <button class="btn sec" data-act="exportData">Export backup</button><button class="btn sec" data-act="importData">Import backup</button>
     <button class="btn sec" data-act="resetPlan">Reset program to Jernej's plan</button>
     <button class="btn sec danger" data-act="eraseAll">Erase all data</button></section>
-    <div class="muted" style="text-align:center;margin:8px 0">Trening v6 · ${S.history.length} workouts saved</div>`;
+    <div class="muted" style="text-align:center;margin:8px 0">Trening v8 · ${S.history.length} workouts saved<br>Exercise photos: free-exercise-db (public domain)</div>`;
   return [hdr('Settings'), m];
 }
 
@@ -642,6 +798,7 @@ function sessionHTML(s, fresh) {
     <div class="big">${c ? '≈ ' : ''}${fmtKg(s.totalKg)}</div><div class="cmp">${c ? 'That\'s ' + c.text : 'No weighted sets this time'}</div>${c ? `<div class="muted">${c.ref}</div>` : ''}</div>
     <div class="lbl">${esc(s.dayName)} · ${esc(s.dayTitle)} — ${fmtDate(s.date)}</div>
     ${s.exercises.map(x => `<div class="sx"><div class="sx-h"><b>${esc(x.name)}${x.feel ? `<span class="ftag" style="color:${x.feel === 'easy' ? 'var(--acc)' : x.feel === 'hard' ? 'var(--danger)' : 'var(--d1)'}">${FEEL[x.feel][1]} ${FEEL[x.feel][0]}</span>` : ''}</b><span>${['time'].includes(x.mode) ? '' : fmtKg(exKg(x, s.kph))}</span></div><div class="sx-sets">${x.sets.map(t => setTxt(x, t)).join('')}</div></div>`).join('')}
+    ${(s.next || []).length ? `<div class="next"><b>Next time</b>${s.next.map(c => `<div>${c.to > c.from ? '↑' : '↓'} ${esc(c.name)}: ${wLabel(c.mode, c.from)} → <b>${wLabel(c.mode, c.to)}</b> <span class="muted">(${c.sugg ? 'suggested — ' : ''}${esc(c.why)})</span></div>`).join('')}</div>` : ''}
     <p class="fine">Approximate total of every ticked set, warm-ups included: reps × weight, dumbbells counted ×2, per-leg sets ×2${s.exercises.some(x => x.mode === 'hole') ? `, cable holes counted as ${s.kph} kg each` : ''}. Bodyweight and timed sets only count any extra weight added.</p>
     <div class="row2"><button class="btn sec danger" data-act="delSess" data-id="${s.id}">Delete</button><button class="btn main" data-act="close">Done</button></div>`;
 }
@@ -662,6 +819,7 @@ function editModal(ctx) {
     <label class="ck"><input type="checkbox" id="f_sides" ${e.sides === 2 ? 'checked' : ''}><span>Reps are per leg / per side<small>Counts double in the weight total</small></span></label>
     <div class="grid2"><label class="fl">Superset tag<input id="f_ss" value="${esc(e.ss)}" placeholder="e.g. S1"></label><label class="fl">Note<input id="f_note" value="${esc(e.note)}"></label></div>
     <label class="fl">Rest after each set (seconds)<input id="f_rest" inputmode="numeric" value="${e.rest > 0 ? e.rest : ''}" placeholder="Default: ${S.settings.restDefault} s"></label>
+    <label class="fl">Demo pictures<select id="f_demo"><option value="">Automatic (by name)</option><option value="none" ${e.demo === 'none' ? 'selected' : ''}>No pictures</option>${Object.entries(DEMOS).sort((a, b) => a[1].localeCompare(b[1])).map(([k, v]) => `<option value="${k}" ${e.demo === k ? 'selected' : ''}>${v}</option>`).join('')}</select></label>
     <label class="fl">How to do it (one tip per line)<textarea id="f_how" rows="4">${esc(e.how || '')}</textarea></label>
     <label class="fl">Increase / decrease step when it feels too easy / hard<input id="f_step" inputmode="decimal" value="${e.step > 0 ? wInput(e.mode, e.step) : ''}" placeholder="Default: ${stepLabel(e.mode, DEF_STEP[e.mode])}"></label>
     <div class="lbl">Warm-up set</div>
@@ -684,7 +842,7 @@ function activeEx(e) {
   const sets = [];
   if (e.wu.on) sets.push({ t: 'w', reps: e.wu.reps, w: warmW(e), done: false });
   for (let i = 0; i < e.sets; i++) sets.push({ t: 's', reps: repsDefault(e.reps), w: e.w, done: false });
-  return { srcId: e.id, name: e.name, mode: e.mode, sides: e.sides, ss: e.ss, note: e.note, target: e.reps, nSets: e.sets, how: e.how || '', rest: e.rest || 0, step: e.step || 0, wuAuto: e.wu.on && e.wu.auto, sugg: e.sugg || null, feel: null, sets };
+  return { srcId: e.id, name: e.name, mode: e.mode, sides: e.sides, ss: e.ss, note: e.note, target: e.reps, nSets: e.sets, planW: e.w, how: e.how || '', demo: e.demo || '', rest: e.rest || 0, step: e.step || 0, wuAuto: e.wu.on && e.wu.auto, sugg: e.sugg || null, feel: null, sets };
 }
 
 function finishModal() {
@@ -720,6 +878,8 @@ const ACT = {
     Object.assign(e, { name, mode, sets: Math.max(1, parseInt(g('f_sets').value) || 1), reps: g('f_reps').value.trim() || '10',
       w: wParse(mode, g('f_w').value), sides: g('f_sides').checked ? 2 : 1, ss: g('f_ss').value.trim(), note: g('f_note').value.trim() });
     e.how = g('f_how').value.trim();
+    e.demo = g('f_demo').value;
+    if (e.start === undefined) e.start = e.w;
     e.rest = parseInt(g('f_rest').value) || 0;
     const stv = g('f_step').value.trim(); e.step = stv ? wParse(mode, stv) : 0;
     e.wu = { on: g('f_wu_on').checked, auto: g('f_wu_auto').checked, reps: parseInt(g('f_wu_reps').value) || 10, w: wParse(mode, g('f_wu_w').value) };
@@ -746,6 +906,13 @@ const ACT = {
   pickNew: () => { const t = ui.pickTarget; closeModal(); editModal(t === 'active' ? { active: true } : { dayId: 'd4' }); },
   start: b => { const d = day(b.dataset.day);
     S.active = { dayId: d.id, startedAt: Date.now(), exercises: d.exercises.map(activeEx) }; save(); ui.view = 'active'; render(); scrollTo(0, 0); },
+  demo: b => { const e = findEx(b.dataset.day, b.dataset.ex), dm = demoOf(e);
+    openModal(`<h3>${esc(e.name)}</h3>${demoBig(dm)}<div class="ex-tgt" style="margin-bottom:6px">${targetText(e)}</div>
+      ${e.how ? `<ul style="margin:0 0 6px;padding-left:20px;font-size:15px;line-height:1.5">${e.how.split('\n').filter(t => t.trim()).map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+      <a class="yt" href="${ytURL(e.name)}" target="_blank" rel="noopener">▶ Watch a video on YouTube (online)</a>
+      <button class="btn main" data-act="close">Close</button>`); },
+  recapNav: b => { ui.recapOff = Math.min(0, (ui.recapOff || 0) + +b.dataset.dir); render(); },
+  exProg: b => openModal(exProgHTML(findEx(b.dataset.day, b.dataset.ex))),
   feel: b => { const x = S.active.exercises[+b.dataset.ei]; x.feel = x.feel === b.dataset.v ? null : b.dataset.v; save();
     b.parentElement.querySelectorAll('button').forEach(o => o.classList.toggle('on', o.dataset.v === x.feel)); },
   useSugg: b => { const x = S.active.exercises[+b.dataset.ei], w = x.sugg.w;
@@ -776,15 +943,30 @@ const ACT = {
     s.totalKg = Math.round(exs.reduce((a, x) => a + exKg(x, kph), 0));
     const upd = document.getElementById('f_upd');
     if (upd && upd.checked) ui.changes.forEach(c => { const e = findEx(c.dayId, c.exId); if (e) e.w = c.to; });
-    // "too easy / too hard" → suggested weight for next time
+    // automatic progression (top of rep range on every set) + "too easy / too hard" suggestions
+    const next = [], am = S.settings.autoProg;
     A.exercises.forEach(x => {
-      const pe = findAny(x.srcId); if (!pe || !x.feel) return;
+      const pe = findAny(x.srcId); if (!pe) return;
+      const ws = x.sets.filter(t => t.t === 's' && t.done); if (!ws.length) return;
+      delete pe.chg;
+      const base = Math.max(...ws.map(t => +t.w || 0)), st = stepOf(pe), [, mx] = repRange(pe.reps);
+      const hit = LEVEL_MODES.includes(pe.mode) && ws.length >= x.nSets && ws.every(t => (+t.reps || 0) >= mx) && x.feel !== 'hard';
+      const why = `hit ${mx} reps on all ${ws.length} sets`;
+      if (hit && am === 'apply') {
+        const to = r2(base + st); pe.w = to; pe.chg = { from: base, to, date: s.date, why }; delete pe.sugg;
+        next.push({ name: pe.name, mode: pe.mode, from: base, to, why, auto: true }); return;
+      }
+      if (hit && am === 'suggest' && x.feel !== 'easy') {
+        const to = r2(base + st); pe.sugg = { w: to, dir: 1, date: s.date, why: 'Hit top of rep range' };
+        next.push({ name: pe.name, mode: pe.mode, from: base, to, why, sugg: true }); return;
+      }
+      if (!x.feel) return;
       if (x.feel === 'ok') { delete pe.sugg; return; }
-      const ws = x.sets.filter(t => t.t === 's' && t.done);
-      const base = ws.length ? Math.max(...ws.map(t => +t.w || 0)) : pe.w;
-      const dir = x.feel === 'easy' ? 1 : -1, w = Math.max(0, Math.round((base + dir * stepOf(pe)) * 100) / 100);
+      const dir = x.feel === 'easy' ? 1 : -1, w = Math.max(0, r2(base + dir * st));
       pe.sugg = { w, dir, date: s.date };
+      next.push({ name: pe.name, mode: pe.mode, from: base, to: w, why: x.feel === 'easy' ? 'felt too easy' : 'felt too hard', sugg: true });
     });
+    s.next = next;
     S.history.push(s); S.active = null; save();
     ui.view = 'home'; render(); scrollTo(0, 0); openModal(sessionHTML(s, true));
   },
@@ -817,7 +999,7 @@ const ACT = {
     };
     i.click();
   },
-  resetPlan: () => { if (confirm("Replace Days 1–4 with Jernej's original plan? Your history is kept.")) { S.days = defaultDays(); save(); render(); } },
+  resetPlan: () => { if (confirm("Replace Days 1–4 with Jernej's original plan? Your history is kept.")) { S.days = withStart(defaultDays()); save(); render(); } },
   eraseAll: () => { if (confirm('Erase ALL workouts and settings on this phone?') && confirm('Are you sure? This cannot be undone.')) { S = defaultState(); save(); render(); } },
 };
 
@@ -838,6 +1020,8 @@ document.addEventListener('input', e => {
   else if (f === 'planw') { const x = findEx(t.dataset.day, t.dataset.ex); x.w = wParse(x.mode, t.value); save(); }
   else if (f === 'kph') { S.settings.kgPerHole = num(t.value); save(); }
   else if (f === 'restDefault' || f === 'restWarm') { S.settings[f] = Math.max(0, parseInt(t.value) || 0); save(); }
+  else if (f === 'demos') { S.settings.demos = t.checked; save(); }
+  else if (f === 'autoProg') { S.settings.autoProg = t.value; save(); }
   else if (f === 'sound' || f === 'wakeLock' || f === 'iosTimer') { S.settings[f] = t.checked; save(); if (f === 'wakeLock') wake(); }
   else if (f === 'shortcutName') { S.settings.shortcutName = t.value; save(); }
   else if (f === 'wuPct') { S.settings.wuPct = Math.min(100, Math.max(0, parseInt(t.value) || 0)); save(); }
@@ -898,6 +1082,16 @@ function afterTick(i, j) {
   const secs = s.t === 'w' ? S.settings.restWarm : (x.rest > 0 ? x.rest : S.settings.restDefault);
   startRest(secs, x.name);
 }
+/* the exercise whose set comes next (first exercise with an unfinished set, superset partners alternate) */
+function nextUp() {
+  const A = S.active; if (!A) return null;
+  const open = A.exercises.filter(x => x.sets.some(t => !t.done));
+  if (!open.length) return null;
+  const doneN = x => x.sets.filter(t => t.done).length;
+  const first = open[0];
+  if (first.ss) { const grp = open.filter(x => x.ss === first.ss); return grp.reduce((m, x) => doneN(x) < doneN(m) ? x : m, grp[0]); }
+  return first;
+}
 function restTick() {
   const bar = $('#restbar'), R = S.active && S.active.rest;
   if (!R) { bar.classList.add('hidden'); document.body.classList.remove('resting'); return; }
@@ -906,9 +1100,10 @@ function restTick() {
   bar.classList.remove('hidden'); document.body.classList.add('resting');
   if (left > 0) {
     bar.classList.remove('over');
-    const html = `<div class="rt">${mmss(left)}</div><div class="rl">Rest<b>${esc(R.label)}</b></div><button data-act="restAdj" data-d="-15">−15</button><button data-act="restAdj" data-d="15">+15</button><button data-act="restSkip">Skip</button><div class="prog" style="width:${Math.max(0, 100 * left / R.total)}%"></div>`;
-    if (bar.dataset.mode !== 'run') { bar.innerHTML = html; bar.dataset.mode = 'run'; }
-    else { bar.querySelector('.rt').textContent = mmss(left); bar.querySelector('.prog').style.width = Math.max(0, 100 * left / R.total) + '%'; bar.querySelector('.rl b').textContent = R.label; }
+    const nx = nextUp(), nd = nx && demoOf(nx);
+    const html = `<div class="rt">${mmss(left)}</div>${nd ? thumbHTML(nd) : ''}<div class="rl">${nx ? 'Next' : 'Rest'}<b>${esc(nx ? nx.name : R.label)}</b></div><button data-act="restAdj" data-d="-15">−15</button><button data-act="restAdj" data-d="15">+15</button><button data-act="restSkip">Skip</button><div class="prog" style="width:${Math.max(0, 100 * left / R.total)}%"></div>`;
+    if (bar.dataset.mode !== 'run' || bar.dataset.nx !== (nx ? nx.name : '')) { bar.innerHTML = html; bar.dataset.mode = 'run'; bar.dataset.nx = nx ? nx.name : ''; }
+    else { bar.querySelector('.rt').textContent = mmss(left); bar.querySelector('.prog').style.width = Math.max(0, 100 * left / R.total) + '%'; const nx = nextUp(); bar.querySelector('.rl b').textContent = nx ? nx.name : R.label; }
   } else {
     if (bar.dataset.mode !== 'over') { bar.innerHTML = `<div class="rt">GO</div><div class="rl">Rest is over<b>Next set 💪</b></div><button data-act="restSkip">OK</button>`; bar.dataset.mode = 'over'; bar.classList.add('over'); }
     if (!R.rang) { R.rang = true; save(); beep(); if (navigator.vibrate) navigator.vibrate([300, 150, 300]); }
