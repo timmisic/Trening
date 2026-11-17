@@ -1,5 +1,5 @@
 // Offline cache for Trening. Bump VERSION when you redeploy changed files.
-const VERSION = 'trening-v10';
+const VERSION = 'trening-v12';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png',
   './img/Barbell_Bench_Press_-_Medium_Grip-0.jpg',
   './img/Barbell_Bench_Press_-_Medium_Grip-1.jpg',
@@ -25,6 +25,14 @@ const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-180.png'
   './img/Leg_Extensions-1.jpg',
   './img/Leg_Press-0.jpg',
   './img/Leg_Press-1.jpg',
+  './img/Dumbbell_Side_Bend-0.jpg',
+  './img/Dumbbell_Side_Bend-1.jpg',
+  './img/Hyperextensions_Back_Extensions-0.jpg',
+  './img/Hyperextensions_Back_Extensions-1.jpg',
+  './img/Dumbbell_Shrug-0.jpg',
+  './img/Dumbbell_Shrug-1.jpg',
+  './img/Incline_Dumbbell_Press-0.jpg',
+  './img/Incline_Dumbbell_Press-1.jpg',
   './img/Lying_Leg_Curls-0.jpg',
   './img/Lying_Leg_Curls-1.jpg',
   './img/Plank-0.jpg',

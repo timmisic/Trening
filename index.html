@@ -290,6 +290,10 @@ const HOW = {
   'lat pulldown, underhand': 'Palms facing you, hands about shoulder-width apart.\nChest up, slight lean back.\nPull the bar to the upper chest with elbows close to the body.\nControl the bar back up to a full stretch.',
   'quad extension machine': 'Knees in line with the pivot point, pad on the lower shins.\nExtend until the legs are straight and squeeze the quads for 1 second.\nLower slowly.\nHold the handles to keep your hips in the seat.',
   'overhead triceps extension': 'Rope on the cable, face away from the machine, staggered stance.\nElbows point forward and stay close to your head.\nExtend the arms fully overhead; only the forearms move.\nLet the rope come back behind your head for a deep stretch, slowly.',
+  'incline dumbbell press': 'Bench at 30–45°. Sit with the dumbbells on your knees, then lie back and bring them to the sides of your chest.\nShoulder blades back and down, feet planted, palms facing forward.\nPress up and slightly together until the arms are almost straight — don\'t bang the dumbbells.\nLower slowly to a deep stretch at chest level, elbows about 45–70° from your body.',
+  'kettlebell side bend': 'Stand tall, kettlebell in one hand at your side, other hand on your hip or behind your head.\nBend slowly straight sideways towards the kettlebell — don\'t lean forward or back.\nCome back up by squeezing the waist on the opposite side, to just past upright.\nDo all reps on one side, then switch hands.',
+  'back extensions': 'Set the pad just below your hip bones so you can bend freely at the hips; heels locked under the rollers.\nArms crossed on your chest (hold a plate there to make it harder).\nLower slowly with a flat back until you feel a stretch in the hamstrings.\nRise until your body is in a straight line — don\'t over-arch the lower back at the top.',
+  'shoulder shrugs': 'Stand tall, dumbbells at your sides, palms facing your body.\nLift your shoulders straight up towards your ears as high as you can.\nHold for 1 second at the top, then lower slowly.\nKeep the arms straight and don\'t roll the shoulders.',
   'hammer curl': 'Palms facing each other (thumbs up).\nElbows at your sides, no swinging.\nCurl up and squeeze at the top.\nLower slowly.',
   'hanging leg raises': 'Hang from the bar with shoulders engaged (not fully loose).\nRaise the legs by curling the pelvis up — don\'t swing.\nBent knees are easier, straight legs are harder.\nLower slowly to stop momentum building up.',
 };
@@ -303,7 +307,7 @@ const DEMOS = {
   'Wide-Grip_Lat_Pulldown': 'Wide-grip lat pulldown', 'Split_Squat_with_Dumbbells': 'Split squat', 'Butterfly': 'Pec deck / butterfly',
   'Reverse_Machine_Flyes': 'Reverse pec deck', 'Standing_Calf_Raises': 'Standing calf raise', 'Plank': 'Plank', 'Romanian_Deadlift': 'Romanian deadlift',
   'Barbell_Incline_Bench_Press_-_Medium_Grip': 'Incline barbell press', 'Underhand_Cable_Pulldowns': 'Underhand pulldown', 'Leg_Extensions': 'Leg extension',
-  'Cable_Rope_Overhead_Triceps_Extension': 'Overhead cable triceps extension', 'Hammer_Curls': 'Hammer curl', 'Hanging_Leg_Raise': 'Hanging leg raise',
+  'Cable_Rope_Overhead_Triceps_Extension': 'Overhead cable triceps extension', 'Hammer_Curls': 'Hammer curl', 'Hanging_Leg_Raise': 'Hanging leg raise', 'Incline_Dumbbell_Press': 'Incline dumbbell press', 'Dumbbell_Side_Bend': 'Side bend', 'Hyperextensions_Back_Extensions': 'Back extension', 'Dumbbell_Shrug': 'Dumbbell shrug',
 };
 const DEMO_BY_NAME = {
   'leg press, lying': 'Leg_Press', 'barbell bench press': 'Barbell_Bench_Press_-_Medium_Grip', 'seated cable row': 'Seated_Cable_Rows',
@@ -312,7 +316,7 @@ const DEMO_BY_NAME = {
   'lat pulldown, wide grip': 'Wide-Grip_Lat_Pulldown', 'bulgarian split squat': 'Split_Squat_with_Dumbbells', 'pec deck fly': 'Butterfly',
   'reverse pec deck': 'Reverse_Machine_Flyes', 'calf raises': 'Standing_Calf_Raises', 'plank': 'Plank', 'romanian deadlift': 'Romanian_Deadlift', 'romanian deadlift, trap bar': 'Romanian_Deadlift',
   'incline barbell press': 'Barbell_Incline_Bench_Press_-_Medium_Grip', 'lat pulldown, underhand': 'Underhand_Cable_Pulldowns', 'quad extension machine': 'Leg_Extensions',
-  'overhead triceps extension': 'Cable_Rope_Overhead_Triceps_Extension', 'hammer curl': 'Hammer_Curls', 'hanging leg raises': 'Hanging_Leg_Raise',
+  'overhead triceps extension': 'Cable_Rope_Overhead_Triceps_Extension', 'hammer curl': 'Hammer_Curls', 'hanging leg raises': 'Hanging_Leg_Raise', 'incline dumbbell press': 'Incline_Dumbbell_Press', 'kettlebell side bend': 'Dumbbell_Side_Bend', 'back extensions': 'Hyperextensions_Back_Extensions', 'shoulder shrugs': 'Dumbbell_Shrug',
 };
 const demoOf = x => (x && x.demo && DEMOS[x.demo]) ? x.demo : (x && x.demo === 'none') ? null : DEMO_BY_NAME[String(x && x.name || '').trim().toLowerCase()] || null;
 const imgs = id => `<img src="img/${id}-0.jpg" alt="" loading="lazy"><img class="f2" src="img/${id}-1.jpg" alt="" loading="lazy">`;
@@ -329,6 +333,16 @@ function ex(name, sets, reps, w, mode, o = {}) {
     how: howFor(name), wu: { on: true, auto: true, reps: o.wuReps ?? (mode === 'time' ? 30 : mode === 'bw' ? 6 : 10), w: 0 } };
 }
 function withStart(days) { days.forEach(d => d.exercises.forEach(e => { e.start = e.w; })); return days; }
+/* extra exercises you can add to any day or workout */
+function libraryEx() {
+  const kb = ex('Kettlebell side bend', 3, '12–15', 16, 'kg', { sides: 2, note: 'Reps per side' }); kb.step = 4;
+  return [
+    ex('Incline dumbbell press', 3, '8–10', 10, 'hand'),
+    kb,
+    ex('Back extensions', 3, '12–15', 0, 'bw', { note: 'Hold a plate on your chest when easy' }),
+    ex('Shoulder shrugs', 3, '12–15', 15, 'hand'),
+  ];
+}
 function defaultDays() {
   return [
     { id: 'd1', name: 'Day 1', title: 'Full Body A', sub: 'Leg press & bench', exercises: [
@@ -428,7 +442,8 @@ function wuLabel(e) {
 }
 function repsDefault(r) { const m = String(r).match(/\d+/); return m ? +m[0] : 10; }
 function repsUnit(mode) { return mode === 'time' ? 's' : ''; }
-function targetText(e) { const wl = wLabel(e.mode, e.w); return `${e.sets} × ${esc(e.reps)}${repsUnit(e.mode)}${e.sides === 2 ? '/leg' : ''}${wl ? ' · ' + wl : ''}`; }
+const sideLbl = e => /leg|squat|lunge/i.test(e.name) ? '/leg' : '/side';
+function targetText(e) { const wl = wLabel(e.mode, e.w); return `${e.sets} × ${esc(e.reps)}${repsUnit(e.mode)}${e.sides === 2 ? sideLbl(e) : ''}${wl ? ' · ' + wl : ''}`; }
 
 /* weight-change step for "too easy / too hard" suggestions (kg, or holes for cables) */
 const DEF_STEP = { hand: 2.5, kg: 10, hole: 1, bw: 5, time: 5 };
@@ -571,7 +586,7 @@ function viewDay() {
   if (d.id === 'd4') m += `<div class="row2"><button class="btn sec" data-act="pick" data-target="d4">＋ Pick from Days 1–3</button>${d.exercises.length ? '<button class="btn sec danger" data-act="clearD4" style="flex:.45">Clear</button>' : ''}</div>`;
   if (!d.exercises.length) m += `<div class="empty">No exercises yet.${d.id === 'd4' ? '<br>Pick the ones you did from Days 1–3, or add your own.' : ''}</div>`;
   m += d.exercises.map((e, i) => exRow(d, e, i, E)).join('');
-  m += `<button class="btn sec" data-act="newEx" data-day="${d.id}">＋ Add exercise</button>`;
+  m += `<button class="btn sec" data-act="pick" data-target="${d.id}">＋ Add exercise</button>`;
   if (!E && d.exercises.length) m += `<button class="btn main sticky" data-act="start" data-day="${d.id}">Start workout</button>`;
   return [hdr(esc(d.name), '<button class="hbtn" data-act="back">‹ Back</button>', `<button class="hbtn" data-act="toggleEdit">${E ? 'Done' : 'Edit'}</button>`), m];
 }
@@ -600,7 +615,7 @@ function activeCard(x, i) {
   const dm = demoOf(x);
   const demo = dm && S.settings.demos ? `<div class="dwrap">${demoBig(dm)}</div>` : '';
   return `<section class="card acard">${demo}<div class="ex-name">${x.ss ? `<span class="ss">${esc(x.ss)}</span>` : ''}${esc(x.name)}</div>
-    <div class="ex-tgt">Target ${x.nSets} × ${esc(x.target)}${repsUnit(x.mode)}${x.sides === 2 ? '/leg' : ''}${x.note ? ' · ' + esc(x.note) : ''}</div>${howHTML(x.how)}<a class="yt" href="${ytURL(x.name)}" target="_blank" rel="noopener">▶ Watch a video (online)</a>
+    <div class="ex-tgt">Target ${x.nSets} × ${esc(x.target)}${repsUnit(x.mode)}${x.sides === 2 ? sideLbl(x) : ''}${x.note ? ' · ' + esc(x.note) : ''}</div>${howHTML(x.how)}<a class="yt" href="${ytURL(x.name)}" target="_blank" rel="noopener">▶ Watch a video (online)</a>
     ${x.sugg ? `<div class="sugg ${x.sugg.dir < 0 ? 'down' : ''}"><span>${x.suggUsed ? '✓ Using ' + wLabel(x.mode, x.sugg.w) : suggText(x.sugg, x.mode)}</span>${x.suggUsed ? '' : `<button data-act="useSugg" data-ei="${i}">Use</button>`}</div>` : ''}${rows}
     <div class="feel-l">How was the weight?</div>
     <div class="feel">${Object.entries(FEEL).map(([k, v]) => `<button class="${k} ${x.feel === k ? 'on' : ''}" data-act="feel" data-ei="${i}" data-v="${k}">${v[1]} ${v[0]}</button>`).join('')}</div>
@@ -796,7 +811,7 @@ function viewSettings() {
     <button class="btn sec" data-act="exportData">Export backup</button><button class="btn sec" data-act="importData">Import backup</button>
     <button class="btn sec" data-act="resetPlan">Reset program to Jernej's plan</button>
     <button class="btn sec danger" data-act="eraseAll">Erase all data</button></section>
-    <div class="muted" style="text-align:center;margin:8px 0">Trening v10 · ${S.history.length} workouts saved<br>Exercise photos: free-exercise-db (public domain)</div>`;
+    <div class="muted" style="text-align:center;margin:8px 0">Trening v12 · ${S.history.length} workouts saved<br>Exercise photos: free-exercise-db (public domain)</div>`;
   return [hdr('Settings'), m];
 }
 
@@ -843,8 +858,11 @@ function editModal(ctx) {
 
 function pickModal(target) {
   ui.pickTarget = target;
-  const src = S.days.filter(d => target === 'active' || d.id !== 'd4');
-  openModal(`<h3>${target === 'd4' ? 'What did you do on Day 4?' : 'Add exercise to this workout'}</h3>
+  const src = S.days.filter(d => target === 'active' || (d.id !== 'd4' && d.id !== target));
+  const lib = libraryEx(); ui.lib = lib;
+  const td = target !== 'active' && day(target);
+  openModal(`<h3>${target === 'd4' ? 'What did you do on Day 4?' : target === 'active' ? 'Add exercise to this workout' : 'Add exercise to ' + esc(td.name)}</h3>
+    <div class="lbl" style="margin-top:14px">Exercise library</div>${lib.map((e, i) => `<label class="ck pick"><input type="checkbox" data-pick="lib|${i}"><span>${esc(e.name)}<small>${targetText(e)}</small></span></label>`).join('')}
     ${src.map(d => `<div class="lbl" style="color:var(--${d.id});margin-top:14px">${esc(d.name)} · ${esc(d.title)}</div>${d.exercises.map(e => `<label class="ck pick"><input type="checkbox" data-pick="${d.id}|${e.id}"><span>${esc(e.name)}<small>${targetText(e)}</small></span></label>`).join('') || '<div class="empty">—</div>'}`).join('')}
     <button class="btn sec" data-act="pickNew">＋ Create a new exercise instead</button>
     <div class="row2"><button class="btn sec" data-act="close">Cancel</button><button class="btn main" data-act="pickAdd">Add selected</button></div>`);
@@ -909,13 +927,13 @@ const ACT = {
     const sel = [...document.querySelectorAll('[data-pick]:checked')].map(i => i.dataset.pick.split('|'));
     if (!sel.length) { alert('Select at least one exercise.'); return; }
     sel.forEach(([dId, eId]) => {
-      const orig = findEx(dId, eId);
-      if (ui.pickTarget === 'd4') { const copy = JSON.parse(JSON.stringify(orig)); copy.id = uid(); delete copy.sugg; day('d4').exercises.push(copy); }
+      const orig = dId === 'lib' ? ui.lib[+eId] : findEx(dId, eId);
+      if (ui.pickTarget !== 'active') { const copy = JSON.parse(JSON.stringify(orig)); copy.id = uid(); delete copy.sugg; delete copy.chg; copy.start = copy.w; day(ui.pickTarget).exercises.push(copy); }
       else S.active.exercises.push(activeEx(orig));
     });
     save(); closeModal(); render();
   },
-  pickNew: () => { const t = ui.pickTarget; closeModal(); editModal(t === 'active' ? { active: true } : { dayId: 'd4' }); },
+  pickNew: () => { const t = ui.pickTarget; closeModal(); editModal(t === 'active' ? { active: true } : { dayId: t }); },
   start: b => { const d = day(b.dataset.day);
     S.active = { dayId: d.id, startedAt: Date.now(), exercises: d.exercises.map(activeEx) }; save(); ui.view = 'active'; render(); scrollTo(0, 0); },
   demo: b => { const e = findEx(b.dataset.day, b.dataset.ex), dm = demoOf(e);
