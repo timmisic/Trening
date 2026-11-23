@@ -21,6 +21,11 @@ body.noscroll{overflow:hidden}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 textarea{font:inherit;font-size:15px;color:var(--text);background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;outline:none;margin-top:4px;resize:vertical}
 .how{margin-top:6px}
+.goal{font-size:14px;margin:2px 0 6px}
+.pst{font-size:13px;font-weight:600;border-radius:10px;padding:7px 10px;margin:6px 0 4px;background:var(--card2);color:var(--muted)}
+.pst.hit{background:var(--accbg);color:var(--acc)}
+.pst.hold{background:#fff4e5;color:#b45309}
+.set .u.of{min-width:26px}
 .lvl{display:inline-block;font-size:11px;font-weight:700;background:#fff4e5;color:#b45309;border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:2px}
 .bar{height:8px;background:var(--card2);border-radius:99px;overflow:hidden;margin-top:6px}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,#16a34a,#0d9488);border-radius:99px}
@@ -379,12 +384,14 @@ function defaultDays() {
     { id: 'd4', name: 'Day 4', title: 'Extra day', sub: 'Pick any exercises from Days 1–3', exercises: [] },
   ];
 }
-function defaultState() { return { v: 1, settings: { unit: 'kg', kgPerHole: 5, wuPct: 55, autoProg: 'apply', demos: true, restDefault: 90, restWarm: 60, sound: true, wakeLock: true, iosTimer: false, shortcutName: 'Trening Rest' }, days: withStart(defaultDays()), history: [], active: null }; }
+function defaultState() { return { v: 1, settings: { unit: 'kg', kgPerHole: 5, wuPct: 55, autoProg: 'off', demos: true, restDefault: 90, restWarm: 60, sound: true, wakeLock: true, iosTimer: false, shortcutName: 'Trening Rest' }, days: withStart(defaultDays()), history: [], active: null }; }
 function migrate(o) {
-  o.settings = Object.assign({ kgPerHole: 5, wuPct: 55, autoProg: 'apply', demos: true, restDefault: 90, restWarm: 60, sound: true, wakeLock: true, iosTimer: false, shortcutName: 'Trening Rest' }, o.settings || {}); o.settings.unit = 'kg';
+  o.settings = Object.assign({ kgPerHole: 5, wuPct: 55, autoProg: 'off', demos: true, restDefault: 90, restWarm: 60, sound: true, wakeLock: true, iosTimer: false, shortcutName: 'Trening Rest' }, o.settings || {}); o.settings.unit = 'kg';
   o.days = Array.isArray(o.days) && o.days.length ? o.days : defaultDays();
   o.history = Array.isArray(o.history) ? o.history : [];
   o.active = o.active || null;
+  if (!o.fix3) { o.settings.autoProg = 'off'; o.fix2 = o.fix3 = true; } /* never raise automatically; Too easy = suggestion */
+  if (!o.fix2) { o.settings.autoProg = 'easy'; o.fix2 = true; } /* weight goes up only on "Too easy" */
   if (!o.fix1) { /* fix: RDL is on a normal barbell; leg raises are 20 reps */
     const OLD = 'romanian deadlift, trap bar';
     const ren = x => { if (String(x.name).trim().toLowerCase() === OLD) x.name = 'Romanian deadlift'; };
@@ -597,6 +604,37 @@ function updLive() { const k = $('#liveKg'), n = $('#liveSets'); if (k) k.textCo
 
 /* sets must be completed in order: only the first unfinished set can be ticked,
    and only the last finished set can be unticked */
+/* has this exercise hit the top of the rep range on every planned working set? */
+function hitTop(x) {
+  if (!LEVEL_MODES.includes(x.mode) || x.feel === 'hard') return false;
+  const [, mx] = repRange(x.target), ws = x.sets.filter(t => t.t === 's' && t.done);
+  return ws.length >= x.nSets && ws.every(t => (+t.reps || 0) >= mx);
+}
+function statusHTML(x) {
+  if (S.settings.autoProg === 'off') {
+    if (x.mode === 'time') return '';
+    const pe = findAny(x.srcId), done = x.sets.filter(t => t.t === 's' && t.done);
+    if (x.feel === 'easy') { const base = done.length ? Math.max(...done.map(t => +t.w || 0)) : (pe ? pe.w : 0), to = r2(base + (pe ? stepOf(pe) : 2.5));
+      return `<div class="pst hit">😌 Too easy → next time you'll see a suggestion: ${wLabel(x.mode, base)} → ${wLabel(x.mode, to)}</div>`; }
+    return `<div class="pst">Weight stays the same. Tap 😌 Too easy below to get a suggestion for next time.</div>`;
+  }
+  if (S.settings.autoProg === 'easy') {
+    if (x.mode === 'time') return '';
+    const pe = findAny(x.srcId), done = x.sets.filter(t => t.t === 's' && t.done);
+    if (x.feel === 'easy') { const base = done.length ? Math.max(...done.map(t => +t.w || 0)) : (pe ? pe.w : 0), to = r2(base + (pe ? stepOf(pe) : 2.5));
+      return `<div class="pst hit">😌 Too easy → next time ${wLabel(x.mode, base)} → ${wLabel(x.mode, to)}</div>`; }
+    return `<div class="pst">Weight stays the same unless you tap 😌 Too easy below</div>`;
+  }
+  if (!LEVEL_MODES.includes(x.mode)) return '';
+  const [, mx] = repRange(x.target), ws = x.sets.filter(t => t.t === 's');
+  const atTop = ws.filter(t => t.done && (+t.reps || 0) >= mx).length, am = S.settings.autoProg;
+  if (x.noRaise) return `<div class="pst hold">⏸ Weight stays the same next time <button class="link" data-act="raise" data-ei="${x._i}">undo</button></div>`;
+  if (hitTop(x) && am !== 'off') {
+    const pe = findAny(x.srcId), base = Math.max(...ws.filter(t => t.done).map(t => +t.w || 0)), to = r2(base + (pe ? stepOf(pe) : 2.5));
+    return `<div class="pst hit">🎯 All ${x.nSets} sets at ${mx} → ${am === 'apply' ? 'next time' : 'suggested'}: ${wLabel(x.mode, base)} → ${wLabel(x.mode, to)} <button class="link" data-act="noRaise" data-ei="${x._i}">keep weight</button></div>`;
+  }
+  return `<div class="pst">To raise the weight: ${mx} reps in all ${x.nSets} sets · ${atTop}/${x.nSets} done</div>`;
+}
 function canToggle(x, j) {
   const s = x.sets[j];
   if (!s.done) return x.sets.slice(0, j).every(t => t.done);
@@ -608,14 +646,14 @@ function activeCard(x, i) {
   const rows = x.sets.map((s, j) => {
     const lab = s.t === 'w' ? 'W' : ++n, ok = canToggle(x, j);
     return `<div class="set ${s.t === 'w' ? 'warm' : ''} ${s.done ? 'done' : ''} ${!s.done && !ok ? 'locked' : ''} ${j === next ? 'next' : ''}" data-ei="${i}" data-si="${j}"><span class="tag">${lab}</span>
-      <input data-field="sReps" inputmode="numeric" value="${s.reps}" aria-label="reps"><span class="u">${x.mode === 'time' ? 's' : 'reps'}</span><span class="x">×</span>
+      <input data-field="sReps" inputmode="numeric" value="${s.reps}" aria-label="reps"><span class="u of">${x.mode === 'time' ? 's' : s.t === 'w' ? 'reps' : '/' + repRange(x.target)[1]}</span><span class="x">×</span>
       <input data-field="sW" inputmode="decimal" value="${wInput(x.mode, s.w)}" aria-label="weight"><span class="u">${wUnit(x.mode)}</span>
       <button class="chk" data-act="tick" aria-label="done" ${ok ? '' : 'disabled'}>✓</button></div>`;
   }).join('');
   const dm = demoOf(x);
   const demo = dm && S.settings.demos ? `<div class="dwrap">${demoBig(dm)}</div>` : '';
   return `<section class="card acard">${demo}<div class="ex-name">${x.ss ? `<span class="ss">${esc(x.ss)}</span>` : ''}${esc(x.name)}</div>
-    <div class="ex-tgt">Target ${x.nSets} × ${esc(x.target)}${repsUnit(x.mode)}${x.sides === 2 ? sideLbl(x) : ''}${x.note ? ' · ' + esc(x.note) : ''}</div>${howHTML(x.how)}<a class="yt" href="${ytURL(x.name)}" target="_blank" rel="noopener">▶ Watch a video (online)</a>
+    <div class="goal"><b>${x.nSets} sets</b> × <b>${esc(x.target)}${x.mode === 'time' ? ' s' : ' reps'}</b>${x.sides === 2 ? sideLbl(x) : ''} · 1 warm-up first${x.note ? ' · ' + esc(x.note) : ''}</div><div id="pst-${i}">${(x._i = i, statusHTML(x))}</div>${howHTML(x.how)}<a class="yt" href="${ytURL(x.name)}" target="_blank" rel="noopener">▶ Watch a video (online)</a>
     ${x.sugg ? `<div class="sugg ${x.sugg.dir < 0 ? 'down' : ''}"><span>${x.suggUsed ? '✓ Using ' + wLabel(x.mode, x.sugg.w) : suggText(x.sugg, x.mode)}</span>${x.suggUsed ? '' : `<button data-act="useSugg" data-ei="${i}">Use</button>`}</div>` : ''}${rows}
     <div class="feel-l">How was the weight?</div>
     <div class="feel">${Object.entries(FEEL).map(([k, v]) => `<button class="${k} ${x.feel === k ? 'on' : ''}" data-act="feel" data-ei="${i}" data-v="${k}">${v[1]} ${v[0]}</button>`).join('')}</div>
@@ -712,8 +750,8 @@ function viewProgress() {
   S.days.forEach(d => {
     const rows = all.filter(o => o.d === d); if (!rows.length) return;
     m += `<section class="card"><div class="wday" style="color:var(--${d.id})">${esc(d.name)} · ${esc(d.title)}</div>${rows.map(({ e, li }) => {
-      const dm = demoOf(e), sub = li.cur ? `${li.done}/${li.need} reps · ${li.need - li.done > 0 ? `${li.mx} reps on all ${e.sets} sets to level up` : 'ready to level up'}` : `${e.sets} × ${li.mx} reps at this weight to level up`;
-      return `<button class="lrow" data-act="exProg" data-day="${d.id}" data-ex="${e.id}">${dm ? thumbHTML(dm, 'sm') : ''}<div class="mid"><b>${esc(e.name)}</b><small>${wLabel(e.mode, e.w)} · ${sub}</small><div class="bar"><i style="width:${Math.round(li.pct * 100)}%"></i></div></div><div class="lv"><small>LV</small><br>${li.lv}</div></button>`;
+      const dm = demoOf(e), sub = ['easy', 'off'].includes(S.settings.autoProg) ? `${wLabel(e.mode, e.w)} · ${li.cur ? li.done + '/' + li.need + ' reps last time · ' : ''}${S.settings.autoProg === 'off' ? 'Too easy + Use' : 'tap 😌 Too easy'} to level up` : li.cur ? `${li.done}/${li.need} reps · ${li.need - li.done > 0 ? `${li.mx} reps on all ${e.sets} sets to level up` : 'ready to level up'}` : `${e.sets} × ${li.mx} reps at this weight to level up`;
+      return `<button class="lrow" data-act="exProg" data-day="${d.id}" data-ex="${e.id}">${dm ? thumbHTML(dm, 'sm') : ''}<div class="mid"><b>${esc(e.name)}</b><small>${['easy', 'off'].includes(S.settings.autoProg) ? sub : wLabel(e.mode, e.w) + ' · ' + sub}</small><div class="bar"><i style="width:${Math.round(li.pct * 100)}%"></i></div></div><div class="lv"><small>LV</small><br>${li.lv}</div></button>`;
     }).join('')}</section>`;
   });
   m += `<div class="muted" style="margin:4px 4px 12px">Levels go up by one each time an exercise's weight goes up by its step. The bar fills as your reps at the current weight climb towards the top of the range.</div>`;
@@ -780,11 +818,13 @@ function viewSettings() {
     <label class="fl">Cable machine: kg per hole<input data-field="kph" inputmode="decimal" value="${st.kgPerHole}"></label>
     <div class="muted">Only used to estimate the total weight lifted for cable exercises set by hole number (e.g. "Hole 7").</div></section>
   <section class="card"><div class="lbl">Progression</div>
-    <label class="fl">When you hit the top of the rep range on every set (e.g. 12 reps on all 4 sets of 10–12)<select data-field="autoProg">
-      <option value="apply" ${st.autoProg === 'apply' ? 'selected' : ''}>Increase the weight automatically</option>
-      <option value="suggest" ${st.autoProg === 'suggest' ? 'selected' : ''}>Only suggest an increase</option>
-      <option value="off" ${st.autoProg === 'off' ? 'selected' : ''}>Do nothing</option></select></label>
-    <div class="muted">Increase = the exercise's step (dumbbells 2.5 kg, barbell/machines 10 kg, cables 1 hole). Not when you rated it "Too hard".</div></section>
+    <label class="fl">When should the weight go up?<select data-field="autoProg">
+      <option value="off" ${st.autoProg === 'off' ? 'selected' : ''}>Never automatically — 😌 Too easy only suggests (tap Use to accept)</option>
+      <option value="easy" ${st.autoProg === 'easy' ? 'selected' : ''}>Automatically when I tap 😌 Too easy</option>
+      <option value="apply" ${st.autoProg === 'apply' ? 'selected' : ''}>Automatically when I hit the top of the rep range on every set</option>
+      <option value="suggest" ${st.autoProg === 'suggest' ? 'selected' : ''}>Suggest it when I hit the top of the rep range</option>
+</select></label>
+    <div class="muted">Increase = the exercise's step (dumbbells 2.5 kg, barbell/machines 10 kg, cables 1 hole). A suggestion shows next time as a green bar with a Use button — the weight only changes if you tap Use (or Apply on the day screen / in Settings).</div></section>
   <section class="card"><div class="lbl">Rest timer</div>
     <div class="grid2"><label class="fl">Rest between sets (s)<input data-field="restDefault" inputmode="numeric" value="${st.restDefault}"></label><label class="fl">Rest after warm-up (s)<input data-field="restWarm" inputmode="numeric" value="${st.restWarm}"></label></div>
     <div class="muted">The timer starts when you tick ✓. You can set a different rest for any exercise with ✎. In a superset there's no rest between the two exercises, only after the pair.</div>
@@ -811,7 +851,7 @@ function viewSettings() {
     <button class="btn sec" data-act="exportData">Export backup</button><button class="btn sec" data-act="importData">Import backup</button>
     <button class="btn sec" data-act="resetPlan">Reset program to Jernej's plan</button>
     <button class="btn sec danger" data-act="eraseAll">Erase all data</button></section>
-    <div class="muted" style="text-align:center;margin:8px 0">Trening v12 · ${S.history.length} workouts saved<br>Exercise photos: free-exercise-db (public domain)</div>`;
+    <div class="muted" style="text-align:center;margin:8px 0">Trening v15 · ${S.history.length} workouts saved<br>Exercise photos: free-exercise-db (public domain)</div>`;
   return [hdr('Settings'), m];
 }
 
@@ -886,7 +926,16 @@ function finishModal() {
     if (Math.abs(top - pe.w) > 0.01) changes.push({ dayId: d.id, exId: pe.id, from: pe.w, to: top, mode: x.mode, name: x.name });
   });
   ui.changes = changes;
+  const am = S.settings.autoProg, ups = [];
+  if (am !== 'off') A.exercises.forEach((x, i) => {
+    const pe = findAny(x.srcId); if (!pe || x.noRaise) return;
+    const ws = x.sets.filter(t => t.t === 's' && t.done); if (!ws.length) return;
+    if (am === 'easy' ? x.feel !== 'easy' || x.mode === 'time' : !hitTop(x)) return;
+    const base = Math.max(...ws.map(t => +t.w || 0));
+    ups.push({ i, name: x.name, mode: x.mode, from: base, to: r2(base + stepOf(pe)) });
+  });
   openModal(`<h3>Finish workout</h3><label class="fl">Date<input type="date" id="f_date" value="${ymd()}" max="${ymd()}"></label>
+    ${ups.length ? `<div class="lbl" style="margin-top:12px">${am === 'suggest' ? 'Suggest an increase next time' : 'Weight goes up next time'}</div><div class="muted">${am === 'easy' ? 'You marked these 😌 Too easy.' : 'You hit the top of the rep range on every set.'} Untick any you want to keep at the same weight.</div>${ups.map(u => `<label class="ck"><input type="checkbox" data-up="${u.i}" checked><span>${esc(u.name)}: ${wLabel(u.mode, u.from)} → <b>${wLabel(u.mode, u.to)}</b></span></label>`).join('')}` : ''}
     ${changes.length ? `<label class="ck"><input type="checkbox" id="f_upd" checked><span>Save the weights I used as my new working weights</span></label><div class="chg">${changes.map(c => `<div>${esc(c.name)}: ${wLabel(c.mode, c.from)} → <b>${wLabel(c.mode, c.to)}</b></div>`).join('')}</div>` : ''}
     <div class="row2"><button class="btn sec" data-act="close">Back</button><button class="btn main" data-act="saveW">Save workout</button></div>`);
 }
@@ -943,8 +992,11 @@ const ACT = {
       <button class="btn main" data-act="close">Close</button>`); },
   recapNav: b => { ui.recapOff = Math.min(0, (ui.recapOff || 0) + +b.dataset.dir); render(); },
   exProg: b => openModal(exProgHTML(findEx(b.dataset.day, b.dataset.ex))),
+  noRaise: b => { const x = S.active.exercises[+b.dataset.ei]; x.noRaise = true; save(); render(); },
+  raise: b => { const x = S.active.exercises[+b.dataset.ei]; delete x.noRaise; save(); render(); },
   feel: b => { const x = S.active.exercises[+b.dataset.ei]; x.feel = x.feel === b.dataset.v ? null : b.dataset.v; save();
-    b.parentElement.querySelectorAll('button').forEach(o => o.classList.toggle('on', o.dataset.v === x.feel)); },
+    b.parentElement.querySelectorAll('button').forEach(o => o.classList.toggle('on', o.dataset.v === x.feel));
+    const el = document.getElementById('pst-' + b.dataset.ei); if (el) { x._i = +b.dataset.ei; el.innerHTML = statusHTML(x); } },
   useSugg: b => { const x = S.active.exercises[+b.dataset.ei], w = x.sugg.w;
     x.sets.forEach(t => { if (t.t === 's') t.w = w; else if (x.wuAuto) t.w = warmW({ mode: x.mode, w, wu: { auto: true } }); });
     x.suggUsed = true; save(); render(); },
@@ -975,12 +1027,14 @@ const ACT = {
     if (upd && upd.checked) ui.changes.forEach(c => { const e = findEx(c.dayId, c.exId); if (e) e.w = c.to; });
     // automatic progression (top of rep range on every set) + "too easy / too hard" suggestions
     const next = [], am = S.settings.autoProg;
-    A.exercises.forEach(x => {
+    const keep = new Set([...document.querySelectorAll('[data-up]:not(:checked)')].map(c => +c.dataset.up));
+    A.exercises.forEach((x, xi) => {
       const pe = findAny(x.srcId); if (!pe) return;
       const ws = x.sets.filter(t => t.t === 's' && t.done); if (!ws.length) return;
       delete pe.chg;
       const base = Math.max(...ws.map(t => +t.w || 0)), st = stepOf(pe), [, mx] = repRange(pe.reps);
-      const hit = LEVEL_MODES.includes(pe.mode) && ws.length >= x.nSets && ws.every(t => (+t.reps || 0) >= mx) && x.feel !== 'hard';
+      const hit = !x.noRaise && !keep.has(xi) && LEVEL_MODES.includes(pe.mode) && ws.length >= x.nSets && ws.every(t => (+t.reps || 0) >= mx) && x.feel !== 'hard';
+      if (x.noRaise || keep.has(xi)) { if (x.feel !== 'hard') delete pe.sugg; return; }
       const why = `hit ${mx} reps on all ${ws.length} sets`;
       if (hit && am === 'apply') {
         const to = r2(base + st); pe.w = to; pe.chg = { from: base, to, date: s.date, why }; delete pe.sugg;
@@ -989,6 +1043,10 @@ const ACT = {
       if (hit && am === 'suggest' && x.feel !== 'easy') {
         const to = r2(base + st); pe.sugg = { w: to, dir: 1, date: s.date, why: 'Hit top of rep range' };
         next.push({ name: pe.name, mode: pe.mode, from: base, to, why, sugg: true }); return;
+      }
+      if (am === 'easy' && x.feel === 'easy' && pe.mode !== 'time') {
+        const to = r2(base + st); pe.w = to; pe.chg = { from: base, to, date: s.date, why: 'rated it too easy' }; delete pe.sugg;
+        next.push({ name: pe.name, mode: pe.mode, from: base, to, why: 'felt too easy', auto: true }); return;
       }
       if (!x.feel) return;
       if (x.feel === 'ok') { delete pe.sugg; return; }
@@ -1051,6 +1109,7 @@ document.addEventListener('input', e => {
   if (f === 'sReps' || f === 'sW') {
     const r = t.closest('.set'), x = S.active.exercises[+r.dataset.ei], s = x.sets[+r.dataset.si];
     if (f === 'sReps') s.reps = parseInt(t.value) || 0; else s.w = wParse(x.mode, t.value);
+    { const el = document.getElementById('pst-' + r.dataset.ei); if (el) { x._i = +r.dataset.ei; el.innerHTML = statusHTML(x); } }
     save(); updLive();
   } else if (f === 'dayTitle') { day(ui.dayId).title = t.value; save(); }
   else if (f === 'daySub') { day(ui.dayId).sub = t.value; save(); }
