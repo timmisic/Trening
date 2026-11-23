@@ -491,21 +491,49 @@ function fmtKg(kg) { return Math.round(unitW(kg)).toLocaleString('en-GB') + ' ' 
 const fmtKgShort = fmtKg;
 
 /* ---------- "that's like lifting a…" ---------- */
+/* 100 things to compare the lifted weight with (approximate weights in kg) */
 const THINGS = [
-  [4.5, '🐈', 'a house cat'], [30, '🐕', 'a Labrador'], [70, '🧺', 'a washing machine'], [180, '🦍', 'a male gorilla'],
-  [300, '🐻', 'a grizzly bear'], [450, '🎹', 'a grand piano'], [550, '🐎', 'a horse'], [900, '🦬', 'a bison'],
-  [1000, '🚗', 'a Fiat 500'], [1200, '🦒', 'a giraffe'], [1300, '🚙', 'a VW Golf'], [1500, '🦛', 'a hippo'],
-  [2000, '🚐', 'a delivery van'], [2300, '🦏', 'a white rhino'], [2600, '🚙', 'a Range Rover'], [4000, '🐘', 'an Asian elephant'],
-  [6000, '🐘', 'an African elephant'], [8000, '🦖', 'a T. rex'], [12000, '🚌', 'a city bus'], [18000, '🚒', 'a fire truck'],
-  [30000, '🐋', 'a humpback whale'], [40000, '🚛', 'a loaded semi truck'], [150000, '🐋', 'a blue whale'], [400000, '✈️', 'a Boeing 747'],
+  [4.5, '🐈', 'a house cat'], [5, '🛴', 'a kick scooter'], [7, '🎳', 'a bowling ball'], [9, '🍉', 'a big watermelon'],
+  [9, '🦃', 'a turkey'], [10, '🚲', 'a bicycle'], [11, '🐶', 'a beagle'], [15, '🐙', 'a giant octopus'],
+  [20, '🏋️', 'an Olympic barbell'], [20, '🎄', 'a Christmas tree'], [23, '🧳', 'a full suitcase'], [30, '🐕', 'a Labrador'],
+  [30, '🐧', 'an emperor penguin'], [30, '🛶', 'a canoe'], [50, '🐒', 'a chimpanzee'], [55, '🐆', 'a cheetah'],
+  [60, '🐐', 'a goat'], [63, '🍺', 'a full beer keg'], [70, '🧺', 'a washing machine'], [70, '🐍', 'an anaconda'],
+  [75, '🐑', 'a sheep'], [80, '🛋️', 'a sofa'], [85, '🦘', 'a kangaroo'], [100, '🦌', 'a deer'],
+  [110, '🐼', 'a giant panda'], [110, '🛵', 'a scooter'], [140, '🦙', 'a llama'], [150, '🐖', 'a pig'],
+  [180, '🦍', 'a male gorilla'], [180, '🤼', 'a sumo wrestler'], [190, '🦁', 'a lion'], [200, '🐬', 'a dolphin'],
+  [200, '🏍️', 'a motorbike'], [200, '🧑‍🚀', 'an astronaut in a spacesuit'], [220, '🐅', 'a tiger'], [250, '🐢', 'a giant tortoise'],
+  [250, '🐟', 'a bluefin tuna'], [300, '🐻', 'a grizzly bear'], [350, '🦓', 'a zebra'], [350, '🛺', 'an auto rickshaw'],
+  [380, '🏍️', 'a touring motorbike'], [450, '🎹', 'a grand piano'], [450, '🐻‍❄️', 'a polar bear'], [500, '🫎', 'a moose'],
+  [500, '🦑', 'a colossal squid'], [550, '🐎', 'a horse'], [600, '🐫', 'a camel'], [700, '🐄', 'a cow'],
+  [750, '🛩️', 'a small plane'], [800, '🏎️', 'a Formula 1 car'], [800, '🐃', 'a water buffalo'], [900, '🦬', 'a bison'],
+  [900, '🚗', 'a Smart car'], [1000, '🐊', 'a saltwater crocodile'], [1000, '🚗', 'a Fiat 500'], [1100, '🦈', 'a great white shark'],
+  [1200, '🦒', 'a giraffe'], [1200, '🦭', 'a walrus'], [1200, '🎃', 'a record giant pumpkin'], [1200, '🚙', 'a Mini Cooper'],
+  [1300, '🚙', 'a VW Golf'], [1500, '🦛', 'a hippo'], [1500, '🚕', 'a taxi'], [1500, '🚤', 'a speedboat'],
+  [1800, '🚓', 'a police car'], [2000, '🚐', 'a delivery van'], [2100, '🚘', 'a Tesla Model S'], [2300, '🦏', 'a white rhino'],
+  [2300, '🛻', 'a pickup truck'], [2600, '🚙', 'a Range Rover'], [3000, '🚁', 'a helicopter'], [3500, '🚑', 'an ambulance'],
+  [4000, '🐘', 'an Asian elephant'], [4000, '⛵', 'a sailboat'], [4500, '🚜', 'a tractor'], [5500, '🐋', 'an orca'],
+  [6000, '🐘', 'an African elephant'], [6000, '🦣', 'a woolly mammoth'], [7500, '🚚', 'a delivery truck'], [8000, '🦖', 'a T. rex'],
+  [10000, '⚓', 'a giant ship anchor'], [12000, '🚌', 'a city bus'], [12500, '🗿', 'an Easter Island statue'], [13700, '🔔', 'Big Ben\'s bell'],
+  [18000, '🚒', 'a fire truck'], [25000, '🪨', 'a Stonehenge stone'], [30000, '🐳', 'a humpback whale'], [30000, '🚋', 'a tram'],
+  [40000, '🚛', 'a loaded semi truck'], [40000, '🦕', 'a Brachiosaurus'], [41000, '✈️', 'a Boeing 737'], [50000, '🛥️', 'a luxury yacht'],
+  [78000, '🚀', 'a Space Shuttle'], [100000, '🚂', 'a steam locomotive'], [150000, '🐋', 'a blue whale'], [180000, '✈️', 'a Boeing 747'],
+  [225000, '🗽', 'the Statue of Liberty'], [420000, '🛰️', 'the International Space Station'], [2900000, '🚀', 'a Saturn V rocket'], [7300000, '🗼', 'the Eiffel Tower'],
 ];
-function compare(kg) {
+/* picks one of the closest things (at most the weight lifted), varied but stable for the same seed */
+function compare(kg, seed = '') {
   if (!(kg > 0)) return null;
-  let t = THINGS[0];
-  for (const x of THINGS) if (x[0] <= kg) t = x;
+  const under = THINGS.filter(t => t[0] <= kg);
+  let t;
+  if (!under.length) t = THINGS[0];
+  else {
+    const best = under[under.length - 1][0];
+    const pool = under.filter(x => kg / x[0] <= Math.max(2.2, kg / best * 1.25)).slice(-8);
+    let h = 0; for (const ch of String(seed) + Math.round(kg)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    t = pool[h % pool.length];
+  }
   const r = kg / t[0];
-  const text = r < 1 ? `less than ${t[2]}` : r < 1.15 ? `about the weight of ${t[2]}` : `about ${r < 10 ? r1(r) : Math.round(r)} × ${t[2]}`;
-  return { emoji: t[1], text, ref: `${t[2].replace(/^an? /, '')} ≈ ${fmtKg(t[0])}` };
+  const text = r < 1 ? `less than ${t[2]}` : r < 1.15 ? `about the weight of ${t[2]}` : `about ${r < 10 ? r1(r) : Math.round(r).toLocaleString('en-GB')} × ${t[2]}`;
+  return { emoji: t[1], text, ref: `${t[2].replace(/^(an?|the) /, '')} ≈ ${fmtKg(t[0])}` };
 }
 
 /* ---------- lookups ---------- */
@@ -540,7 +568,7 @@ function render() {
 }
 
 function viewSummary() {
-  const H = S.history, total = H.reduce((a, s) => a + s.totalKg, 0), c = compare(total);
+  const H = S.history, total = H.reduce((a, s) => a + s.totalKg, 0), c = compare(total, H.length);
   const lastD = H.reduce((l, s) => !l || s.date > l ? s.date : l, null);
   let since = '—', sinceL = 'no workouts yet';
   if (lastD) {
@@ -685,7 +713,7 @@ function calendarHTML() {
 }
 
 function sessRow(s) {
-  const c = compare(s.totalKg);
+  const c = compare(s.totalKg, s.id);
   return `<button class="srow" data-act="openSess" data-id="${s.id}">${(d => d ? thumbHTML(d, 'sm') : `<span class="dot" style="background:var(--${s.dayId},var(--acc))"></span>`)(s.exercises.map(demoOf).find(Boolean))}
     <div class="mid"><b>${esc(s.dayName)} · ${esc(s.dayTitle)}</b><small>${fmtDate(s.date)} · ${s.exercises.length} exercise${s.exercises.length === 1 ? '' : 's'}</small></div>
     <div class="sr-r"><b>${fmtKgShort(s.totalKg)}</b><small>${c ? c.emoji : ''}</small></div></button>`;
@@ -796,7 +824,7 @@ function progressHTML() {
 
 function viewHistory() {
   const H = S.history, total = H.reduce((a, s) => a + s.totalKg, 0), mp = ymd().slice(0, 7);
-  const month = H.filter(s => s.date.startsWith(mp)).length, c = compare(total);
+  const month = H.filter(s => s.date.startsWith(mp)).length, c = compare(total, H.length);
   let m = `<section class="stats"><div><b>${H.length}</b><small>workouts</small></div><div><b>${month}</b><small>this month</small></div><div><b>${fmtKgShort(total)}</b><small>lifted in total</small></div></section>`;
   if (c) m += `<div class="cmp small">${c.emoji} All-time: ${c.text}</div>`;
   const list = H.slice().sort(cmpSess).reverse().slice(0, 30);
@@ -851,12 +879,12 @@ function viewSettings() {
     <button class="btn sec" data-act="exportData">Export backup</button><button class="btn sec" data-act="importData">Import backup</button>
     <button class="btn sec" data-act="resetPlan">Reset program to Jernej's plan</button>
     <button class="btn sec danger" data-act="eraseAll">Erase all data</button></section>
-    <div class="muted" style="text-align:center;margin:8px 0">Trening v15 · ${S.history.length} workouts saved<br>Exercise photos: free-exercise-db (public domain)</div>`;
+    <div class="muted" style="text-align:center;margin:8px 0">Trening v16 · ${S.history.length} workouts saved<br>Exercise photos: free-exercise-db (public domain)</div>`;
   return [hdr('Settings'), m];
 }
 
 function sessionHTML(s, fresh) {
-  const c = compare(s.totalKg);
+  const c = compare(s.totalKg, s.id);
   const setTxt = (x, t) => {
     const w = x.mode === 'hole' ? 'H' + t.w : x.mode === 'kg' ? unitW(t.w) : x.mode === 'hand' ? unitW(t.w) + '/h' : (t.w > 0 ? '+' + unitW(t.w) : 'BW');
     return `<span class="${t.t === 'w' ? 'w' : ''}">${t.t === 'w' ? 'W ' : ''}${t.reps}${repsUnit(x.mode)} × ${w}</span>`;
